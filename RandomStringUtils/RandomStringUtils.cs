@@ -14,10 +14,6 @@ namespace RandomStringUtils
 		/// </remarks>
 		private static readonly Random Rand = new Random();
 
-		private const string Numeric = "0123456789";
-		private const string Alphabetic = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-		private const string Symbols = @" !""#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
-
 		/// <summary>
 		/// Creates a random string whose length is the number of characters specified.
 		///</summary>
@@ -25,12 +21,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string Random(int count)
 		{
-			var stringChars = new char[count];
-
-			for (var i = 0; i < stringChars.Length; i++)
-				stringChars[i] = Convert.ToChar(Rand.Next(Char.MaxValue));
-
-			return new String(stringChars);
+			return Random(count, false, false);
 		}
 
 		/// <summary>
@@ -43,15 +34,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string Random(int count, bool letters, bool numbers)
 		{
-			if (letters && numbers) return RandomAlphanumeric(count);
-			if (letters) return RandomAlphabetic(count);
-			if (numbers) return RandomNumeric(count);
-			else
-			{
-				// the man does help us here.
-				// I deal with it myself.
-				return Random(count, Symbols);
-			}
+			return Random(count, 0, 0, letters, numbers);
 		}
 
 		/// <summary>
@@ -79,9 +62,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string Random(int count, int start, int end, bool letters, bool numbers)
 		{
-			var chars = (letters ? Alphabetic : String.Empty) + (numbers ? Numeric : String.Empty);
-			return Random(count, chars.Substring(start, chars.Length - start - end));
-
+			return Random(count, start, end, letters, numbers, null, Rand);
 		}
 
 		/// <summary>
@@ -98,7 +79,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string Random(int count, int start, int end, bool letters, bool numbers, char[] chars)
 		{
-			throw new NotImplementedException();
+			return Random(count, start, end, letters, numbers, chars, Rand);
 		}
 
 		/// <summary>
@@ -114,7 +95,61 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string Random(int count, int start, int end, bool letters, bool numbers, char[] chars, Random random)
 		{
-			throw new NotImplementedException();
+			if (count == 0)
+				return String.Empty;
+			if (count < 0)
+				throw new ArgumentException("Requested random string length " + count + " is less than 0.");
+			if ((start == 0) && (end == 0))
+			{
+				end = 'z' + 1;
+				start = ' ';
+				if (!letters && !numbers)
+				{
+					start = 0;
+					end = Int32.MaxValue;
+				}
+			}
+
+			var buffer = new char[count];
+			var gap = end - start;
+
+			while (count-- != 0)
+			{
+				var ch = (chars == null) ? (char)(random.Next(gap) + start) : chars[random.Next(gap) + start];
+				if ((letters && Char.IsLetter(ch)) || (numbers && Char.IsDigit(ch)) || (!letters && !numbers))
+				{
+					if (ch >= 56320 && ch <= 57343)
+					{
+						if (count == 0) count++;
+						else
+						{
+							// low surrogate, insert high surrogate after putting it in
+							buffer[count] = ch;
+							count--;
+							buffer[count] = (char)(55296 + random.Next(128));
+						}
+					}
+					else if (ch >= 55296 && ch <= 56191)
+					{
+						if (count == 0) count++;
+						else
+						{
+							// high surrogate, insert low surrogate before putting it in
+							buffer[count] = (char)(56320 + random.Next(128));
+							count--;
+							buffer[count] = ch;
+						}
+					}
+					else if (ch >= 56192 && ch <= 56319)
+						// private high surrogate, no effing clue, so skip it
+						count++;
+					else
+						buffer[count] = ch;
+				}
+				else
+					count++;
+			}
+			return new String(buffer);
 		}
 
 		/// <summary>
@@ -126,14 +161,9 @@ namespace RandomStringUtils
 		/// <exception cref="ArgumentException">if count is lower than 0</exception>
 		public static string Random(int count, string chars)
 		{
-			if (count < 0) throw new ArgumentException();
-
-			var stringChars = new char[count];
-
-			for (var i = 0; i < stringChars.Length; i++)
-				stringChars[i] = chars[Rand.Next(chars.Length)];
-
-			return new String(stringChars);
+			return chars == null
+				? Random(count, 0, 0, false, false, null, Rand)
+				: Random(count, chars.ToCharArray());
 		}
 
 		/// <summary>
@@ -143,7 +173,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string RandomAlphabetic(int count)
 		{
-			return Random(count, Alphabetic);
+			return Random(count, true, false);
 		}
 
 		/// <summary>
@@ -154,7 +184,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string RandomAlphanumeric(int count)
 		{
-			return Random(count, Alphabetic + Numeric);
+			return Random(count, true, true);
 		}
 
 		/// <summary>
@@ -166,7 +196,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string RandomAscii(int count)
 		{
-			return Random(count, Symbols + Alphabetic + Numeric);
+			return Random(count, 32, 127, false, false);
 		}
 
 		/// <summary>
@@ -177,7 +207,7 @@ namespace RandomStringUtils
 		/// <returns>the random string</returns>
 		public static string RandomNumeric(int count)
 		{
-			return Random(count, Numeric);
+			return Random(count, false, true);
 		}
 	}
 }
