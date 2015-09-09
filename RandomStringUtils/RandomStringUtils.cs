@@ -16,7 +16,7 @@ namespace RandomStringUtils
 
 		private const string Numeric = "0123456789";
 		private const string Alphabetic = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-		private const string Symbols = " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+		private const string Symbols = @" !""#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
 
 		/// <summary>
 		/// Creates a random string whose length is the number of characters specified.
@@ -27,7 +27,7 @@ namespace RandomStringUtils
 		{
 			var stringChars = new char[count];
 
-			for (int i = 0; i < stringChars.Length; i++)
+			for (var i = 0; i < stringChars.Length; i++)
 				stringChars[i] = Convert.ToChar(Rand.Next(Char.MaxValue));
 
 			return new String(stringChars);
