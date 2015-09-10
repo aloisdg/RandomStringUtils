@@ -4,10 +4,10 @@ ReandomStringUtils is a C# port of [org.apache.commons.lang.RandomStringUtils](h
 
 ## Support
 
-| Type   | IsIncluded |
-| ------ |:----------:|
-| Bool   |     x      |
-| Int    |     x      |
-| Long   |     X      |
-| Float  |     X      |
-| Double |     X      |
+| Type               | IsIncluded |
+| ------------------ |:----------:|
+| Random             |     x      |
+| RandomNumeric      |     x      |
+| RandomAscii        |     X      |
+| RandomAlphanumeric |     X      |
+| RandomAlphabetic   |     X      |
