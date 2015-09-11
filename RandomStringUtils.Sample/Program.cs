@@ -8,7 +8,7 @@ namespace RandomStringUtils.Sample
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static void Main()
 		{
 			Console.WriteLine(RandomStringUtils.Random(42));
 		}
