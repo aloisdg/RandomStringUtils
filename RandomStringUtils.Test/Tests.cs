@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
@@ -19,6 +20,18 @@ namespace RandomStringUtils.Test
 		}
 
 		[Test]
+		public void TestRandomZero()
+		{
+			Assert.AreEqual(0, RandomStringUtils.Random(0).Length);
+		}
+
+		[Test]
+		public void TestRandomError()
+		{
+			 Assert.Throws<ArgumentException>(() => RandomStringUtils.Random(-1));
+		}
+
+		[Test]
 		public void TestRandomAlphabetic()
 		{
 			var result = RandomStringUtils.RandomAlphabetic(Count);
@@ -32,6 +45,9 @@ namespace RandomStringUtils.Test
 			Assert.IsTrue(Count == result.Length && result.All<Char>(Char.IsLetterOrDigit));
 		}
 
+		/// <summary>
+		/// Check if RandomNumeric return a correct string made with digit.
+		/// </summary>
 		[Test]
 		public void TestRandomNumeric()
 		{
