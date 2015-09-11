@@ -99,14 +99,17 @@ namespace RandomStringUtils
 				return String.Empty;
 			if (count < 0)
 				throw new ArgumentException("Requested random string length " + count + " is less than 0.");
-			if ((start == 0) && (end == 0))
+			if (start == 0 && end == 0)
 			{
-				end = 'z' + 1;
-				start = ' ';
 				if (!letters && !numbers)
 				{
-					start = 0;
 					end = Int32.MaxValue;
+					start = 0;
+				}
+				else
+				{
+					end = 'z' + 1;
+					start = ' ';
 				}
 			}
 
