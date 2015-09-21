@@ -4,6 +4,8 @@ ReandomStringUtils is a C# port of [org.apache.commons.lang.RandomStringUtils](h
 
 Get the last release of RandomStringUtils on [NuGet](https://www.nuget.org/packages/RandomStringUtils/) or on [GitHub](https://github.com/aloisdg/RandomStringUtils/releases).
 
+[![Build status](https://ci.appveyor.com/api/projects/status/dtjvgxw72d6pwvg4?svg=true)](https://ci.appveyor.com/project/aloisdg/randomstringutils)
+
 
 ## Support
 
