@@ -13,9 +13,9 @@ Get the last release of RandomStringUtils on [NuGet](https://www.nuget.org/packa
 | ------------------ |:----------:|
 | Random             |     x      |
 | RandomNumeric      |     x      |
-| RandomAscii        |     X      |
-| RandomAlphanumeric |     X      |
-| RandomAlphabetic   |     X      |
+| RandomAscii        |     x      |
+| RandomAlphanumeric |     x      |
+| RandomAlphabetic   |     x      |
 
 
 ## Contributing
